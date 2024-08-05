@@ -1,0 +1,30 @@
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - mongo_network
+    restart: always
+
+  app:
+    build: .
+    container_name: nestjs-app
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/sensordb
+    ports:
+      - "3000:3000"
+    networks:
+      - mongo_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  mongo_network:
+    driver: bridge
